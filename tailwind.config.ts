@@ -7,6 +7,7 @@ export default {
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
+			"./1779947149594867648.html"
 	],
 	prefix: "",
 	theme: {
@@ -62,6 +63,10 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			fontFamily: {
+				cormorant: ['Cormorant', 'serif'],
+				golos: ['Golos Text', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
