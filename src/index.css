@@ -2,39 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── CSS Variables ─── */
 @layer base {
   :root {
-    --background: 210 20% 97%;
-    --foreground: 215 25% 18%;
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 18%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 18%;
-    --primary: 214 52% 35%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 20% 92%;
-    --secondary-foreground: 215 25% 18%;
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 15% 50%;
-    --accent: 214 52% 35%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214 20% 85%;
-    --input: 214 20% 85%;
-    --ring: 214 52% 35%;
-    --radius: 0.375rem;
-    --navy: 214 52% 28%;
-    --navy-mid: 214 45% 35%;
-    --navy-light: 214 35% 48%;
-    --sidebar-background: 210 20% 97%;
-    --sidebar-foreground: 215 25% 18%;
-    --sidebar-primary: 214 52% 35%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 92%;
-    --sidebar-accent-foreground: 215 25% 18%;
-    --sidebar-border: 214 20% 85%;
-    --sidebar-ring: 214 52% 35%;
+    /* shadcn tokens — mapped to dark luxury palette */
+    --background: 20 8% 6%;
+    --foreground: 40 18% 90%;
+    --card: 20 8% 9%;
+    --card-foreground: 40 18% 90%;
+    --popover: 20 8% 9%;
+    --popover-foreground: 40 18% 90%;
+    --primary: 43 72% 54%;
+    --primary-foreground: 20 8% 6%;
+    --secondary: 20 8% 13%;
+    --secondary-foreground: 40 18% 80%;
+    --muted: 20 8% 12%;
+    --muted-foreground: 40 8% 52%;
+    --accent: 43 72% 54%;
+    --accent-foreground: 20 8% 6%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 40 18% 90%;
+    --border: 20 8% 17%;
+    --input: 20 8% 13%;
+    --ring: 43 72% 54%;
+    --radius: 0.25rem;
+
+    /* sidebar */
+    --sidebar-background: 20 8% 6%;
+    --sidebar-foreground: 40 18% 90%;
+    --sidebar-primary: 43 72% 54%;
+    --sidebar-primary-foreground: 20 8% 6%;
+    --sidebar-accent: 20 8% 13%;
+    --sidebar-accent-foreground: 40 18% 80%;
+    --sidebar-border: 20 8% 17%;
+    --sidebar-ring: 43 72% 54%;
+
+    /* brand tokens */
+    --gold: 43 72% 54%;
+    --gold-light: 43 80% 70%;
+    --gold-dim: 43 55% 36%;
+    --stone-0: 20 8% 5%;
+    --stone-1: 20 8% 8%;
+    --stone-2: 20 8% 11%;
+    --stone-3: 20 8% 16%;
+    --cream: 40 18% 90%;
+    --cream-dim: 40 10% 62%;
   }
 }
 
@@ -42,16 +54,361 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-background text-foreground;
-    font-family: "Golos Text", "Roboto", sans-serif;
+    background: hsl(var(--stone-0));
+    color: hsl(var(--cream));
+    font-family: "Golos Text", sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
+/* ─── Typography helpers ─── */
+.font-display {
+  font-family: "Cormorant", serif;
+}
+.font-body {
+  font-family: "Golos Text", sans-serif;
+}
+
+/* ─── Gold utilities ─── */
+.text-gold {
+  color: hsl(var(--gold));
+}
+.text-gold-light {
+  color: hsl(var(--gold-light));
+}
+.text-cream {
+  color: hsl(var(--cream));
+}
+.text-cream-dim {
+  color: hsl(var(--cream-dim));
+}
+.bg-stone-0 {
+  background: hsl(var(--stone-0));
+}
+.bg-stone-1 {
+  background: hsl(var(--stone-1));
+}
+.bg-stone-2 {
+  background: hsl(var(--stone-2));
+}
+.border-gold {
+  border-color: hsl(var(--gold));
+}
+
+.gold-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(43 55% 38%) 0%,
+    hsl(43 80% 66%) 50%,
+    hsl(43 55% 38%) 100%
+  );
+}
+
+.gold-text {
+  background: linear-gradient(
+    135deg,
+    hsl(43 80% 72%) 0%,
+    hsl(43 72% 54%) 45%,
+    hsl(43 80% 72%) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Thin gold line ─── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--gold)),
+    transparent
+  );
+}
+.gold-line-v {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    hsl(var(--gold) / 0.5),
+    transparent
+  );
+}
+
+/* ─── Noise grain overlay ─── */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  z-index: 1;
+}
+
+/* ─── Section label ─── */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--gold));
+}
+.section-label::before,
+.section-label::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: hsl(var(--gold) / 0.6);
+}
+
+/* ─── Buttons ─── */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(
+    135deg,
+    hsl(43 55% 38%) 0%,
+    hsl(43 72% 54%) 50%,
+    hsl(43 55% 38%) 100%
+  );
+  background-size: 200% auto;
+  color: hsl(var(--stone-0));
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.72rem 1.8rem;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-position 0.4s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+.btn-gold:hover {
+  background-position: right center;
+  box-shadow: 0 6px 28px hsl(43 72% 54% / 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-outline-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: hsl(var(--gold));
+  border: 1px solid hsl(var(--gold) / 0.5);
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-outline-gold:hover {
+  background: hsl(var(--gold) / 0.1);
+  border-color: hsl(var(--gold));
+  box-shadow: 0 0 20px hsl(43 72% 54% / 0.18);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: hsl(var(--cream));
+  border: 1px solid hsl(var(--cream) / 0.3);
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-ghost:hover {
+  background: hsl(var(--cream) / 0.08);
+  border-color: hsl(var(--cream) / 0.6);
+}
+
+/* ─── Cards ─── */
+.product-card {
+  background: hsl(var(--stone-2));
+  border: 1px solid hsl(var(--stone-3));
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.product-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(43 72% 54% / 0.05), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+  z-index: 1;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 16px 48px hsl(0 0% 0% / 0.5),
+    0 0 0 1px hsl(43 72% 54% / 0.25);
+  border-color: hsl(43 72% 54% / 0.35);
+}
+.product-card:hover::before {
+  opacity: 1;
+}
+
+/* ─── Nav ─── */
+.nav-item {
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.77rem;
+  letter-spacing: 0.06em;
+  color: hsl(var(--cream) / 0.75);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.nav-item:hover {
+  color: hsl(var(--gold));
+}
+
+/* ─── Tab buttons ─── */
+.tab-pill {
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 0.38rem 1rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--stone-3));
+  background: transparent;
+  color: hsl(var(--cream-dim));
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s;
+}
+.tab-pill.active,
+.tab-pill:hover {
+  border-color: hsl(var(--gold) / 0.6);
+  color: hsl(var(--gold));
+  background: hsl(var(--gold) / 0.07);
+}
+
+/* ─── Review card ─── */
+.review-card {
+  background: hsl(var(--stone-2));
+  border: 1px solid hsl(var(--stone-3));
+  padding: 1.5rem;
+  min-width: 290px;
+  max-width: 330px;
+  flex-shrink: 0;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.review-card:hover {
+  border-color: hsl(var(--gold) / 0.25);
+  box-shadow: 0 8px 32px hsl(0 0% 0% / 0.35);
+}
+
+/* ─── Badge strip ─── */
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+.badge-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: hsl(var(--gold) / 0.12);
+  border: 1px solid hsl(var(--gold) / 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── About checklist ─── */
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.88rem;
+  color: hsl(var(--cream-dim));
+  line-height: 1.6;
+}
+.check-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: hsl(var(--gold));
+  margin-top: 0.52rem;
+  flex-shrink: 0;
+}
+
+/* ─── Step ─── */
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid hsl(var(--gold) / 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant", serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--gold));
+  flex-shrink: 0;
+}
+
+/* ─── Scrollbar hide ─── */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Animations ─── */
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(28px);
   }
   to {
     opacity: 1;
@@ -66,191 +423,32 @@
     opacity: 1;
   }
 }
-.animate-fade-up {
-  animation: fade-up 0.6s ease both;
+
+.anim-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 0.68, 0, 1.2) both;
 }
-.animate-fade-in {
-  animation: fade-in 0.5s ease both;
+.anim-fade-in {
+  animation: fade-in 0.6s ease both;
 }
-.delay-100 {
+
+.d-0 {
+  animation-delay: 0s;
+}
+.d-1 {
   animation-delay: 0.1s;
 }
-.delay-200 {
+.d-2 {
   animation-delay: 0.2s;
 }
-.delay-300 {
+.d-3 {
   animation-delay: 0.3s;
 }
-.delay-400 {
+.d-4 {
   animation-delay: 0.4s;
 }
-.delay-500 {
+.d-5 {
   animation-delay: 0.5s;
 }
-
-.nav-link {
-  font-size: 0.8rem;
-  color: #fff;
-  opacity: 0.88;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: "Golos Text", sans-serif;
-}
-.nav-link:hover {
-  opacity: 1;
-}
-
-.btn-primary {
-  background: hsl(var(--navy));
-  color: #fff;
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 0.6rem 1.5rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    box-shadow 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-primary:hover {
-  background: hsl(214 45% 38%);
-  box-shadow: 0 4px 14px hsl(214 52% 28% / 0.28);
-}
-
-.btn-outline {
-  background: transparent;
-  color: hsl(var(--navy));
-  border: 1.5px solid hsl(var(--navy));
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 0.55rem 1.3rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-outline:hover {
-  background: hsl(var(--navy));
-  color: #fff;
-}
-
-.btn-white {
-  background: #fff;
-  color: hsl(var(--navy));
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.6rem 1.6rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-white:hover {
-  background: hsl(210 30% 92%);
-}
-
-.btn-ghost-white {
-  background: transparent;
-  color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 0.55rem 1.3rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-ghost-white:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: #fff;
-}
-
-.product-card {
-  background: #fff;
-  border: 1px solid hsl(214 20% 90%);
-  border-radius: 8px;
-  overflow: hidden;
-  transition:
-    box-shadow 0.25s,
-    transform 0.25s;
-  cursor: pointer;
-}
-.product-card:hover {
-  box-shadow: 0 8px 28px hsl(214 30% 50% / 0.15);
-  transform: translateY(-3px);
-}
-
-.tab-btn {
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.8rem;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  border: 1.5px solid hsl(214 25% 75%);
-  background: transparent;
-  color: hsl(var(--navy));
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.tab-btn.active,
-.tab-btn:hover {
-  background: hsl(var(--navy));
-  border-color: hsl(var(--navy));
-  color: #fff;
-}
-
-.review-card {
-  background: #fff;
-  border: 1px solid hsl(214 20% 90%);
-  border-radius: 8px;
-  padding: 1.25rem;
-  min-width: 280px;
-  transition: box-shadow 0.2s;
-}
-.review-card:hover {
-  box-shadow: 0 6px 20px hsl(214 30% 50% / 0.12);
-}
-
-.scrollbar-hide {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.step-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: hsl(var(--navy));
-  flex-shrink: 0;
-}
-
-.badge-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: hsl(var(--navy) / 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.d-6 {
+  animation-delay: 0.6s;
 }

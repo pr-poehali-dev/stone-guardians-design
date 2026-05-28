@@ -2,436 +2,519 @@ import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
 /* ── Images ── */
-const IMG_ANGEL    = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/62c90c4f-6273-496a-843a-68829a58a291.jpg";
+const IMG_ANGEL    = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/59164c47-5a0a-4323-b123-2349b1a1d42d.jpg";
+const IMG_GRANITE  = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/636190c9-c6a2-4b70-9cf6-8eaa3c5532c1.jpg";
+const IMG_CRAFT    = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/98369281-7314-4446-888d-0709c0e1af3a.jpg";
 const IMG_CATALOG  = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/60f175a8-2d1d-4b86-95be-01dcfcdbd100.jpg";
 const IMG_WORKSHOP = "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/8867b041-866e-4df9-ac15-8e82c9fa4067.jpg";
 const IMG_PORTFOLIO= "https://cdn.poehali.dev/projects/79a6b314-55a0-47eb-b152-2f77b7cb3c32/files/a074d7f9-4b5a-4159-a62d-361ae4cff99c.jpg";
 
-/* ── Nav ── */
-const TOP_NAV = [
-  { label: "Памятники",              sub: true },
-  { label: "Металлические изделия",  sub: true },
-  { label: "Дополнительные элементы",sub: true },
-  { label: "Услуги",                 sub: true },
-  { label: "Оплаченные",             sub: true },
-  { label: "Портрет и надписи",      sub: true },
-  { label: "Изделия из камня",       sub: true },
-];
+/* ── Constants ── */
+const TOP_NAV = ["Памятники","Металлические изделия","Дополнительные элементы","Услуги","Оплаченные","Портрет и надписи","Изделия из камня"];
+const TABS    = ["Гранитные памятники","Памятники животных","Мраморные памятники","Детские памятники","Мемориальные доски"];
 
-/* ── Catalog tabs ── */
-const TABS = ["Гранитные памятники","Памятники животных","Мраморные памятники","Детские памятники","Мемориальные доски"];
-
-/* ── Products ── */
 const PRODUCTS = [
-  { id:1, name:"Вертикальный памятник", price:"25 000,00 ₽", img: IMG_CATALOG },
-  { id:2, name:"Вертикальный памятник", price:"27 000,00 ₽", img: IMG_CATALOG },
-  { id:3, name:"Вертикальный памятник", price:"27 000,00 ₽", img: IMG_CATALOG },
-  { id:4, name:"Вертикальный памятник", price:"27 000,00 ₽", img: IMG_CATALOG },
+  { id:1, name:"Вертикальная стела",     type:"Гранит чёрный",  price:"25 000 ₽", img: IMG_GRANITE  },
+  { id:2, name:"Памятник «Классика»",    type:"Гранит карельский", price:"27 000 ₽", img: IMG_CATALOG  },
+  { id:3, name:"Мраморная вертикаль",    type:"Мрамор белый",   price:"27 000 ₽", img: IMG_ANGEL    },
+  { id:4, name:"Горизонтальный монумент",type:"Лабрадорит",     price:"32 000 ₽", img: IMG_PORTFOLIO },
 ];
 
-/* ── Badges ── */
 const BADGES = [
-  { icon:"ShieldCheck", label:"Гарантия",   desc:"на установку от 5 лет" },
-  { icon:"Zap",         label:"Скорость",   desc:"выполнения за 3 дня" },
-  { icon:"CreditCard",  label:"Рассрочка",  desc:"без переплат и %%" },
-  { icon:"Award",       label:"Ответственность", desc:"качество гарантировано" },
-  { icon:"Star",        label:"Доверие",    desc:"тысячи довольных клиентов" },
+  { icon:"ShieldCheck", label:"Гарантия",        desc:"на установку от 5 лет" },
+  { icon:"Zap",         label:"Скорость",         desc:"выполнение за 14 дней" },
+  { icon:"CreditCard",  label:"Рассрочка 0%",     desc:"без переплат и комиссий" },
+  { icon:"Award",       label:"Ответственность",  desc:"качество гарантировано" },
+  { icon:"Star",        label:"Доверие",           desc:"более 3 000 семей" },
 ];
 
-/* ── Steps ── */
 const STEPS = [
-  { n:1, label:"Проектирую сооружения" },
-  { n:2, label:"Подготавливаю договор и вношу предоплату (всего 2000₽)" },
-  { n:3, label:"Принимаю готовую работу" },
-  { n:4, label:"Расчёт и гарантия" },
+  { n:1, label:"Проектируем сооружение", sub:"Эскиз и согласование дизайна" },
+  { n:2, label:"Договор и предоплата",   sub:"Официальный договор, всего 2 000 ₽" },
+  { n:3, label:"Изготовление",           sub:"Собственный цех, контроль качества" },
+  { n:4, label:"Сдача и гарантия",       sub:"Установка, акт приёма, гарантийный лист" },
 ];
 
-/* ── Reviews ── */
-const REVIEWS = [
-  { name:"Майкл Слоун", src:"Яндекс", text:"Добрый день! Мы долго искали кто сделает по нашему эскизу памятник, и обратились к ним по совету ближайшего знакомого, и он..." },
-  { name:"Майкл Слоун", src:"Яндекс", text:"Добрый день! Мы долго искали кто сделает по нашему эскизу памятник, и обратились к ним по совету ближайшего знакомого, и он..." },
-  { name:"Майкл Слоун", src:"Яндекс", text:"Добрый день! Мы долго искали кто сделает по нашему эскизу памятник, и обратились к ним по совету ближайшего знакомого, и он..." },
-];
-
-/* ── About checklist ── */
 const ABOUT_LIST = [
-  "Проектирование и монтаж мемориальных сооружений. Зп+дзот и памятники",
-  "Гарантийное реализация отсутствующих товаров гарантийный и абонентское обслуживание",
-  "на рынке с 2003 года, опытные специалисты",
-  "Оптимальная цена за счет прямых поставок от производителей сырья",
-  "Полное официализация сделок. Наличный и безналичный расчет. Работа с организациями, справки для Военкоматов.",
+  "Проектирование и монтаж мемориальных сооружений",
+  "Гарантийное обслуживание изделий",
+  "На рынке с 2003 года, опытные специалисты",
+  "Оптимальная цена за счёт прямых поставок сырья",
+  "Полное оформление сделки, работа с организациями",
 ];
 
-/* ── Addresses ── */
+const REVIEWS = [
+  { name:"Елена Морозова",  rating:5, text:"Обратились в тяжёлый момент. Всё сделали с душой и профессионально. Памятник превзошёл наши ожидания — красивая гравировка, качественный камень.", src:"Яндекс" },
+  { name:"Андрей Сергеев",  rating:5, text:"Сложный заказ с портретом выполнили точно в срок. Гравировка чёткая, детальная. Настоящие мастера своего дела, рекомендую всем.", src:"Google" },
+  { name:"Наталья Козлова", rating:5, text:"Искала производство без посредников — нашла «Хранителей». Цена честная, всё официально, договор. Результат — на высшем уровне.", src:"Яндекс" },
+];
+
 const ADDRESSES = [
-  "г. Самолетово, Воздушная улица, 42м",
-  "ул. Плавная, 118",
-  "ул. Морозкина, 54",
+  "г. Самара, ул. Мечникова, 15",
+  "г. Самара, ул. Победы, 118",
+  "г. Тольятти, ул. Морозкина, 54",
 ];
 
-/* ── Calculator ── */
 const MATERIALS = [
-  { id:"gb", name:"Гранит чёрный",    base:28000 },
-  { id:"gg", name:"Гранит серый",     base:22000 },
-  { id:"mw", name:"Мрамор белый",     base:20000 },
-  { id:"gk", name:"Гранит карельский",base:36000 },
+  { id:"gb", name:"Гранит чёрный",     base:28000 },
+  { id:"gg", name:"Гранит серый",      base:22000 },
+  { id:"mw", name:"Мрамор белый",      base:20000 },
+  { id:"gk", name:"Гранит карельский", base:36000 },
 ];
 const SIZES = [
-  { id:"s", name:"80×40 см",  mult:1 },
-  { id:"m", name:"100×50 см", mult:1.45 },
-  { id:"l", name:"120×60 см", mult:1.9 },
-  { id:"xl",name:"150×70 см", mult:2.55 },
+  { id:"s",  name:"80×40 см",  mult:1    },
+  { id:"m",  name:"100×50 см", mult:1.45 },
+  { id:"l",  name:"120×60 см", mult:1.9  },
+  { id:"xl", name:"150×70 см", mult:2.55 },
 ];
 const ENGRAVINGS = [
-  { id:"none",  name:"Без гравировки",    price:0 },
-  { id:"text",  name:"Текст и даты",      price:3500 },
-  { id:"laser", name:"Портрет лазерный",  price:8500 },
-  { id:"hand",  name:"Портрет ручной",    price:16000 },
+  { id:"none",  name:"Без гравировки",   price:0     },
+  { id:"text",  name:"Текст и даты",     price:3500  },
+  { id:"laser", name:"Портрет лазерный", price:8500  },
+  { id:"hand",  name:"Портрет ручной",   price:16000 },
 ];
 
-/* ── Helpers ── */
-function useInView(threshold = 0.12) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
+/* ── useInView hook ── */
+function useInView(threshold = 0.1) {
+  const ref  = useRef<HTMLDivElement>(null);
+  const [v, setV] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
-      { threshold }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setV(true); }, { threshold });
+    io.observe(el);
+    return () => io.disconnect();
   }, [threshold]);
-  return { ref, inView };
+  return { ref, v };
 }
 
-/* ══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ */
 export default function Index() {
-  const [activeTab, setActiveTab]     = useState(0);
-  const [mobileMenu, setMobileMenu]   = useState(false);
-  const [calcMat,   setCalcMat]       = useState(MATERIALS[0].id);
-  const [calcSize,  setCalcSize]      = useState(SIZES[0].id);
-  const [calcEngr,  setCalcEngr]      = useState(ENGRAVINGS[0].id);
-  const [install,   setInstall]       = useState(false);
+  const [menu,    setMenu]    = useState(false);
+  const [tab,     setTab]     = useState(0);
+  const [mat,     setMat]     = useState(MATERIALS[0].id);
+  const [sz,      setSz]      = useState(SIZES[0].id);
+  const [engr,    setEngr]    = useState(ENGRAVINGS[0].id);
+  const [install, setInstall] = useState(false);
 
-  const hero    = useInView(0.05);
-  const catalog = useInView(0.1);
-  const badges  = useInView(0.1);
-  const steps   = useInView(0.1);
-  const about   = useInView(0.1);
-  const reviews = useInView(0.1);
-  const calc    = useInView(0.1);
-  const footer  = useInView(0.1);
+  const hero    = useInView(.05);
+  const catalog = useInView(.08);
+  const bands   = useInView(.1);
+  const steps   = useInView(.1);
+  const about   = useInView(.1);
+  const reviews = useInView(.08);
+  const calcSec = useInView(.08);
+  const promo   = useInView(.1);
+  const ftr     = useInView(.05);
 
-  const mat  = MATERIALS.find(m => m.id === calcMat)!;
-  const sz   = SIZES.find(s => s.id === calcSize)!;
-  const engr = ENGRAVINGS.find(e => e.id === calcEngr)!;
-  const total = Math.round(mat.base * sz.mult) + engr.price + (install ? 7000 : 0);
+  const material  = MATERIALS.find(m => m.id === mat)!;
+  const size      = SIZES.find(s => s.id === sz)!;
+  const engraving = ENGRAVINGS.find(e => e.id === engr)!;
+  const total     = Math.round(material.base * size.mult) + engraving.price + (install ? 7000 : 0);
 
-  const scroll = (id: string) => {
-    document.querySelector(id)?.scrollIntoView({ behavior:"smooth" });
-    setMobileMenu(false);
+  const scrollTo = (id: string) => {
+    document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenu(false);
   };
 
-  /* ── NAV colors ── */
-  const NAVY = "hsl(214,52%,28%)";
-  const NAVY_BG = "#2b4a7a";
+  /* shared colors */
+  const G  = "hsl(43,72%,54%)";   /* gold */
+  const S0 = "hsl(20,8%,6%)";     /* stone-0 */
+  const S1 = "hsl(20,8%,8%)";
+  const S2 = "hsl(20,8%,11%)";
+  const S3 = "hsl(20,8%,16%)";
 
+  /* ── RENDER ── */
   return (
-    <div className="min-h-screen bg-[#f4f6f9] text-[#1e2d42]">
+    <div style={{ background: S0, color:"hsl(40,18%,90%)" }} className="min-h-screen overflow-x-hidden">
 
-      {/* ══ TOP BAR ══ */}
-      <div style={{ background: NAVY_BG }} className="hidden md:flex items-center justify-between px-6 py-1.5 text-xs text-white/70">
-        <span>Мастерская камня «Хранители» — Самара</span>
-        <div className="flex items-center gap-5">
-          <a href="tel:+78463001234" className="flex items-center gap-1.5 text-white hover:text-white/80">
-            <Icon name="Phone" size={12} /> +7 (846) 300-12-34
+      {/* ════ TOP BAR ════ */}
+      <div className="hidden md:flex items-center justify-between px-8 py-2 text-xs border-b"
+        style={{ background: S1, borderColor: S3 }}>
+        <span style={{ color:"hsl(40,8%,50%)" }}>Мастерская камня · Самара · с 2003 года</span>
+        <div className="flex items-center gap-6" style={{ color:"hsl(40,8%,50%)" }}>
+          <a href="tel:+78463001234" className="flex items-center gap-1.5 hover:text-gold transition-colors" style={{ color:"hsl(40,8%,50%)" }}>
+            <Icon name="Phone" size={11} style={{ color: G }} /> +7 (846) 300-12-34
           </a>
-          <a href="#" className="flex items-center gap-1.5 hover:text-white/90"><Icon name="User" size={12} /> Войти</a>
-          <a href="#" className="flex items-center gap-1.5 hover:text-white/90"><Icon name="Heart" size={12} /> Избранное</a>
-          <a href="#" className="flex items-center gap-1.5 hover:text-white/90"><Icon name="ShoppingCart" size={12} /> Корзина</a>
+          <a href="#" className="flex items-center gap-1.5 hover:text-gold transition-colors" style={{ color:"hsl(40,8%,50%)" }}>
+            <Icon name="User" size={11} /> Войти
+          </a>
+          <a href="#" className="flex items-center gap-1.5 hover:text-gold transition-colors" style={{ color:"hsl(40,8%,50%)" }}>
+            <Icon name="Heart" size={11} /> Избранное
+          </a>
         </div>
       </div>
 
-      {/* ══ MAIN NAV ══ */}
-      <nav style={{ background: NAVY_BG }} className="sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-6 h-14">
+      {/* ════ NAV ════ */}
+      <nav className="sticky top-0 z-50 border-b" style={{ background:"hsl(20,8%,7%,0.97)", borderColor: S3, backdropFilter:"blur(16px)" }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center h-16 gap-8">
 
           {/* Logo */}
-          <button onClick={() => scroll("#hero")} className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex items-center justify-center rounded-full w-9 h-9 bg-white/15 border border-white/30">
-              <Icon name="Gem" size={18} style={{ color: "#7ec8e3" }} />
+          <button onClick={() => scrollTo("#hero")} className="flex items-center gap-3 flex-shrink-0 group">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center border"
+                style={{ background:"hsl(43,72%,54%,0.12)", borderColor:"hsl(43,72%,54%,0.4)" }}>
+                <Icon name="Gem" size={17} style={{ color: G }} />
+              </div>
             </div>
-            <div className="leading-tight text-left">
-              <div className="text-white font-bold text-sm tracking-wide leading-none">ХРАНИТЕЛЬ</div>
-              <div className="text-white/60 text-[9px] tracking-widest leading-none mt-0.5">МАСТЕРСКАЯ КАМНЯ</div>
+            <div>
+              <div className="font-display font-semibold tracking-[.15em] leading-none text-base" style={{ color:"hsl(40,18%,90%)" }}>
+                ХРАНИТЕЛЬ
+              </div>
+              <div className="text-[.52rem] tracking-[.22em] mt-0.5 leading-none" style={{ color:"hsl(40,8%,45%)" }}>
+                МАСТЕРСКАЯ КАМНЯ
+              </div>
             </div>
           </button>
 
-          {/* Nav links */}
-          <div className="hidden md:flex items-center gap-1 flex-1 overflow-x-auto scrollbar-hide">
-            {TOP_NAV.map(item => (
-              <button key={item.label} className="nav-link flex items-center gap-0.5 px-2 py-1 rounded hover:bg-white/10 transition-colors">
-                {item.label}
-                {item.sub && <Icon name="ChevronDown" size={12} style={{ opacity: 0.6 }} />}
+          {/* Links */}
+          <div className="hidden md:flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-hide">
+            {TOP_NAV.map(l => (
+              <button key={l} className="nav-item">
+                {l} <Icon name="ChevronDown" size={11} style={{ opacity:.5 }} />
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-3 ml-auto">
-            <a href="tel:+78463001234" className="hidden lg:flex items-center gap-1.5 text-white text-sm font-medium">
-              <Icon name="Phone" size={14} style={{ color: "#7ec8e3" }} />
+          {/* CTA */}
+          <div className="hidden md:flex items-center gap-4 ml-auto flex-shrink-0">
+            <a href="tel:+78463001234" className="flex items-center gap-2 text-sm font-display font-medium"
+              style={{ color: G }}>
+              <Icon name="Phone" size={14} style={{ color: G }} />
               +7 (846) 300-12-34
             </a>
-            <button className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
-              <Icon name={mobileMenu ? "X" : "Menu"} size={22} />
+            <button className="btn-gold" style={{ padding:".55rem 1.2rem", fontSize:".72rem" }}
+              onClick={() => scrollTo("#calculator")}>
+              Рассчитать цену
             </button>
           </div>
+
+          <button className="md:hidden ml-auto" style={{ color: G }} onClick={() => setMenu(!menu)}>
+            <Icon name={menu ? "X" : "Menu"} size={22} />
+          </button>
         </div>
 
-        {mobileMenu && (
-          <div className="md:hidden bg-[#243f68] px-4 pb-4 flex flex-col gap-1">
-            {TOP_NAV.map(item => (
-              <button key={item.label} className="nav-link text-left py-2 border-b border-white/10 w-full">
-                {item.label}
-              </button>
+        {menu && (
+          <div className="md:hidden px-6 pb-6 flex flex-col gap-1 border-t" style={{ background:"hsl(20,8%,7%)", borderColor: S3 }}>
+            {TOP_NAV.map(l => (
+              <button key={l} className="nav-item text-left py-2.5 border-b w-full" style={{ borderColor: S3 }}>{l}</button>
             ))}
-            <a href="tel:+78463001234" className="flex items-center gap-2 text-white py-2 text-sm">
+            <a href="tel:+78463001234" className="flex items-center gap-2 py-3 text-sm" style={{ color: G }}>
               <Icon name="Phone" size={14} /> +7 (846) 300-12-34
             </a>
+            <button className="btn-gold w-full mt-2" onClick={() => scrollTo("#calculator")}>Рассчитать цену</button>
           </div>
         )}
       </nav>
 
-      {/* ══ HERO ══ */}
-      <section id="hero" ref={hero.ref}
-        className="relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1e3a5f 0%, #2b5797 60%, #3d7ab5 100%)", minHeight: 420 }}>
-
-        {/* Texture overlay */}
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "radial-gradient(circle at 70% 50%, #fff 0%, transparent 60%)" }} />
-
-        <div className="max-w-7xl mx-auto px-4 md:px-10 flex items-center relative z-10" style={{ minHeight: 420 }}>
-          {/* Text */}
-          <div className={`flex-1 py-12 ${hero.inView ? "animate-fade-up" : "opacity-0"}`}>
-            <h1 className="text-white font-bold leading-tight mb-3" style={{ fontSize: "clamp(1.8rem,4vw,2.8rem)" }}>
-              Изготовление<br />
-              <span style={{ color:"#7ec8e3" }}>памятников</span> в Самаре
-            </h1>
-            <p className="text-white/70 text-sm mb-7 max-w-md leading-relaxed">
-              Мы есть то, о чём есть память
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <button className="btn-white" onClick={() => scroll("#catalog")}>
-                Смотреть каталог
-              </button>
-              <button className="btn-ghost-white" onClick={() => scroll("#calculator")}>
-                <Icon name="Calculator" size={14} /> Рассчитать цену
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-6 mt-8">
-              {[["15+","лет на рынке"],["3 000+","выполненных работ"],["100%","гарантия"]].map(([n,l]) => (
-                <div key={l}>
-                  <div className="text-white font-bold text-xl">{n}</div>
-                  <div className="text-white/60 text-xs">{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Angel image */}
-          <div className={`hidden md:block relative flex-shrink-0 ${hero.inView ? "animate-fade-in delay-300" : "opacity-0"}`}
-            style={{ width: 320, height: 400 }}>
-            <img src={IMG_ANGEL} alt="Памятник" className="w-full h-full object-contain object-bottom drop-shadow-2xl"
-              style={{ filter: "brightness(1.05) contrast(1.05)" }} />
-          </div>
+      {/* ════ HERO ════ */}
+      <section id="hero" ref={hero.ref} className="relative overflow-hidden grain" style={{ minHeight:560 }}>
+        {/* Background layers */}
+        <div className="absolute inset-0">
+          <img src={IMG_CRAFT} alt="" className="w-full h-full object-cover opacity-20"
+            style={{ filter:"grayscale(.6) brightness(.5)" }} />
+          <div className="absolute inset-0"
+            style={{ background:"linear-gradient(to right, hsl(20,8%,6%) 40%, hsl(20,8%,6%,.5) 70%, transparent 100%)" }} />
+          <div className="absolute inset-0"
+            style={{ background:"linear-gradient(to top, hsl(20,8%,6%) 0%, transparent 50%)" }} />
+          <div className="absolute inset-0"
+            style={{ background:"radial-gradient(ellipse at 20% 60%, hsl(43,72%,54%,.06), transparent 55%)" }} />
         </div>
-      </section>
 
-      {/* ══ CATALOG ══ */}
-      <section id="catalog" ref={catalog.ref} className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className={catalog.inView ? "animate-fade-up" : "opacity-0"}>
-          <h2 className="section-title mb-4">КАТАЛОГ</h2>
-
-          {/* Tabs */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-6">
-            {TABS.map((t,i) => (
-              <button key={t} onClick={() => setActiveTab(i)}
-                className={`tab-btn ${activeTab===i?"active":""}`}>
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* Products grid */}
-          <div className="relative">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {PRODUCTS.map(p => (
-                <div key={p.id} className="product-card">
-                  <div className="relative h-44 bg-gray-100 overflow-hidden">
-                    <img src={p.img} alt={p.name} className="w-full h-full object-cover"
-                      style={{ filter:"grayscale(0.3) brightness(0.9)" }} />
-                  </div>
-                  <div className="p-3">
-                    <div className="text-xs text-gray-500 mb-0.5">Вертикальный памятник</div>
-                    <div className="font-semibold text-sm text-[#1e2d42] mb-2">{p.name}</div>
-                    <div className="font-bold text-base mb-3" style={{ color: NAVY }}>{p.price}</div>
-                    <div className="flex gap-2">
-                      <button className="btn-primary text-xs py-1.5 px-3 flex-1">Подробнее</button>
-                      <button className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
-                        <Icon name="Heart" size={14} style={{ color:"#888" }} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Arrow nav */}
-            <button className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-50">
-              <Icon name="ChevronLeft" size={16} style={{ color: NAVY }} />
-            </button>
-            <button className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-50">
-              <Icon name="ChevronRight" size={16} style={{ color: NAVY }} />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ BADGES ══ */}
-      <div ref={badges.ref} style={{ background: NAVY_BG }} className="py-6 px-4">
-        <div className={`max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6 ${badges.inView ? "animate-fade-up" : "opacity-0"}`}>
-          {BADGES.map((b,i) => (
-            <div key={b.label} className={`flex flex-col items-center text-center gap-2 ${badges.inView ? `animate-fade-up delay-${(i+1)*100}` : ""}`}>
-              <div className="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center">
-                <Icon name={b.icon} size={20} style={{ color:"#7ec8e3" }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-12 flex items-center" style={{ minHeight:560 }}>
+          <div className="flex-1 py-20">
+            <div className={`${hero.v ? "anim-fade-up d-0" : "opacity-0"}`}>
+              <div className="section-label mb-6">Самара · Собственное производство</div>
+              <h1 className="font-display font-light leading-[1.05] mb-5"
+                style={{ fontSize:"clamp(2.4rem,5.5vw,4.2rem)", color:"hsl(40,18%,93%)" }}>
+                Изготовление<br />
+                <em className="not-italic" style={{ color: G }}>памятников</em><br />
+                в Самаре
+              </h1>
+              <p className="font-body text-sm leading-relaxed mb-10 max-w-md" style={{ color:"hsl(40,8%,58%)" }}>
+                Мастерская камня «Хранители» — мы есть то, о чём есть память.
+                Собственное производство с 2003 года.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="btn-gold" onClick={() => scrollTo("#catalog")}>
+                  <Icon name="Grid3x3" size={14} /> Смотреть каталог
+                </button>
+                <button className="btn-ghost" onClick={() => scrollTo("#calculator")}>
+                  <Icon name="Calculator" size={14} /> Рассчитать цену
+                </button>
               </div>
-              <div className="text-white font-semibold text-sm">{b.label}</div>
-              <div className="text-white/60 text-xs leading-tight">{b.desc}</div>
+            </div>
+
+            {/* Stats */}
+            <div className={`flex flex-wrap gap-10 mt-16 pt-8 border-t ${hero.v ? "anim-fade-up d-4" : "opacity-0"}`}
+              style={{ borderColor: S3 }}>
+              {[["15+","лет опыта"],["3 000+","выполненных работ"],["100%","своё производство"]].map(([n,l]) => (
+                <div key={l}>
+                  <div className="font-display font-semibold" style={{ fontSize:"2rem", color: G }}>{n}</div>
+                  <div className="font-body text-xs mt-0.5" style={{ color:"hsl(40,8%,50%)" }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Angel */}
+          <div className={`hidden lg:block flex-shrink-0 relative ${hero.v ? "anim-fade-in d-3" : "opacity-0"}`}
+            style={{ width:340, height:480 }}>
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
+              <img src={IMG_ANGEL} alt="Памятник" className="w-full h-full object-cover object-top"
+                style={{ filter:"brightness(.9) contrast(1.05)" }} />
+              <div className="absolute inset-0"
+                style={{ background:"linear-gradient(to left, transparent 40%, hsl(20,8%,6%) 100%)" }} />
+              <div className="absolute inset-0"
+                style={{ background:"linear-gradient(to top, hsl(20,8%,6%) 0%, transparent 30%)" }} />
+              {/* Gold rim */}
+              <div className="absolute inset-0 rounded-lg" style={{ boxShadow:`inset 0 0 0 1px hsl(43,72%,54%,.2)` }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════ BADGES ════ */}
+      <div ref={bands.ref} className="border-y" style={{ background: S1, borderColor: S3 }}>
+        <div className={`max-w-7xl mx-auto px-4 md:px-8 py-8 grid grid-cols-2 md:grid-cols-5 gap-8 ${bands.v ? "anim-fade-up" : "opacity-0"}`}>
+          {BADGES.map((b,i) => (
+            <div key={b.label} className={`badge-item ${bands.v ? `anim-fade-up d-${i+1}` : ""}`}>
+              <div className="badge-icon">
+                <Icon name={b.icon} size={20} style={{ color: G }} />
+              </div>
+              <div className="font-body text-sm font-semibold" style={{ color:"hsl(40,18%,85%)" }}>{b.label}</div>
+              <div className="font-body text-xs leading-tight" style={{ color:"hsl(40,8%,50%)" }}>{b.desc}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ══ PROMO BANNERS ══ */}
-      <section className="py-10 px-4 md:px-8 max-w-7xl mx-auto grid md:grid-cols-2 gap-5">
+      {/* ════ CATALOG ════ */}
+      <section id="catalog" ref={catalog.ref} className="py-16 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className={catalog.v ? "anim-fade-up" : "opacity-0"}>
+          <div className="section-label mb-3">Каталог</div>
+          <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
+            <h2 className="font-display font-light" style={{ fontSize:"clamp(1.8rem,3vw,2.5rem)", color:"hsl(40,18%,92%)" }}>
+              Наши памятники
+            </h2>
+            <button className="btn-outline-gold" style={{ padding:".5rem 1.2rem", fontSize:".72rem" }}>
+              Весь каталог
+            </button>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-8">
+            {TABS.map((t,i) => (
+              <button key={t} onClick={() => setTab(i)} className={`tab-pill ${tab===i?"active":""}`}>{t}</button>
+            ))}
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative">
+            {PRODUCTS.map((p,i) => (
+              <div key={p.id} className={`product-card rounded-sm ${catalog.v ? `anim-fade-up d-${i+1}` : "opacity-0"}`}>
+                <div className="relative overflow-hidden" style={{ height:200 }}>
+                  <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    style={{ filter:"brightness(.75) saturate(.7)" }} />
+                  <div className="absolute inset-0"
+                    style={{ background:"linear-gradient(to top, hsl(20,8%,11%) 0%, transparent 55%)" }} />
+                </div>
+                <div className="p-4 relative z-10">
+                  <div className="font-body text-xs mb-0.5" style={{ color:"hsl(40,8%,48%)" }}>{p.type}</div>
+                  <div className="font-display text-base font-medium mb-2" style={{ color:"hsl(40,18%,88%)" }}>{p.name}</div>
+                  <div className="font-display text-lg font-semibold mb-3" style={{ color: G }}>{p.price}</div>
+                  <div className="flex gap-2">
+                    <button className="btn-gold flex-1" style={{ padding:".45rem .6rem", fontSize:".7rem" }}>Подробнее</button>
+                    <button className="w-8 h-8 rounded-sm flex items-center justify-center transition-all border"
+                      style={{ borderColor: S3, background:"transparent" }}>
+                      <Icon name="Heart" size={13} style={{ color:"hsl(40,8%,50%)" }} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Arrow nav */}
+            {[{dir:"left",icon:"ChevronLeft"},{dir:"right",icon:"ChevronRight"}].map(({dir,icon}) => (
+              <button key={dir}
+                className={`absolute top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center border transition-all hover:border-gold ${dir==="left" ? "-left-4" : "-right-4"}`}
+                style={{ background: S2, borderColor: S3 }}>
+                <Icon name={icon as "ChevronLeft"} size={16} style={{ color: G }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════ PROMO BANNERS ════ */}
+      <section ref={promo.ref} className="py-4 px-4 md:px-8 max-w-7xl mx-auto grid md:grid-cols-2 gap-5">
         {/* Custom order */}
-        <div className="rounded-xl overflow-hidden relative flex flex-col justify-end p-6" style={{ minHeight:200 }}>
-          <img src={IMG_WORKSHOP} alt="Мастерская" className="absolute inset-0 w-full h-full object-cover" style={{ filter:"brightness(0.45)" }} />
+        <div className={`relative rounded-sm overflow-hidden flex flex-col justify-end p-7 grain ${promo.v ? "anim-fade-up d-1" : "opacity-0"}`}
+          style={{ minHeight:200 }}>
+          <img src={IMG_WORKSHOP} alt="" className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter:"brightness(.35) saturate(.6)" }} />
+          <div className="absolute inset-0" style={{ background:"linear-gradient(135deg, hsl(43,60%,28%,.15), transparent 60%)" }} />
+          <div className="absolute inset-0 rounded-sm" style={{ boxShadow:`inset 0 0 0 1px hsl(43,72%,54%,.2)` }} />
           <div className="relative z-10">
-            <div className="text-white font-bold text-lg mb-1">НЕ НАШЛИ ТО ЧТО ИСКАЛИ?</div>
-            <div className="text-white/80 text-sm mb-4">Изготовим памятник под заказ</div>
+            <div className="font-display font-semibold text-xl mb-1" style={{ color:"hsl(40,18%,93%)" }}>
+              Не нашли что искали?
+            </div>
+            <div className="font-body text-sm mb-5" style={{ color:"hsl(40,8%,60%)" }}>
+              Изготовим памятник под индивидуальный заказ
+            </div>
             <div className="flex gap-3">
-              <button className="btn-white text-xs py-2">
+              <button className="btn-gold" style={{ padding:".55rem 1.2rem", fontSize:".72rem" }}>
                 <Icon name="Phone" size={13} /> Позвонить
               </button>
-              <button className="btn-ghost-white text-xs py-2">
+              <button className="btn-ghost" style={{ padding:".55rem 1.2rem", fontSize:".72rem" }}>
                 <Icon name="MapPin" size={13} /> На карте
               </button>
             </div>
           </div>
         </div>
+
         {/* Promo */}
-        <div className="rounded-xl overflow-hidden relative flex flex-col justify-between p-6" style={{ minHeight:200, background: NAVY_BG }}>
-          <div>
-            <div className="inline-block bg-white/20 text-white text-xs px-3 py-1 rounded-full mb-3">Акция</div>
-            <div className="text-white font-bold text-lg mb-1">При заказе от 1000 ваз — в подарок!</div>
+        <div className={`relative rounded-sm overflow-hidden flex flex-col justify-between p-7 grain ${promo.v ? "anim-fade-up d-2" : "opacity-0"}`}
+          style={{ minHeight:200, background: S1 }}>
+          <div className="absolute inset-0" style={{ background:"linear-gradient(135deg, hsl(43,55%,25%,.2), transparent 70%)" }} />
+          <div className="absolute inset-0 rounded-sm" style={{ boxShadow:`inset 0 0 0 1px hsl(43,72%,54%,.2)` }} />
+          <div className="relative z-10">
+            <div className="inline-block px-3 py-1 rounded-full text-xs font-body mb-3" style={{ background:"hsl(43,72%,54%,.15)", color: G, border:`1px solid hsl(43,72%,54%,.3)` }}>
+              Акция
+            </div>
+            <div className="font-display font-semibold text-xl mb-1" style={{ color:"hsl(40,18%,93%)" }}>
+              При заказе от 1 000 ваз — в подарок!
+            </div>
+            <div className="font-body text-sm" style={{ color:"hsl(40,8%,55%)" }}>
+              Ограниченное предложение
+            </div>
           </div>
-          <button className="btn-white self-start text-xs py-2">Подробнее</button>
+          <button className="btn-outline-gold self-start relative z-10" style={{ padding:".5rem 1.2rem", fontSize:".72rem" }}>
+            Подробнее
+          </button>
         </div>
       </section>
 
-      {/* ══ STEPS ══ */}
-      <section id="steps" ref={steps.ref} className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className={steps.inView ? "animate-fade-up" : "opacity-0"}>
-          <h2 className="section-title text-center mb-10">ПОРЯДОК РАБОТЫ</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
-            {/* Connector line */}
-            <div className="hidden md:block absolute top-5 left-[12.5%] right-[12.5%] h-0.5 bg-[#2b4a7a]/20 z-0" />
+      {/* ════ STEPS ════ */}
+      <section id="steps" ref={steps.ref} className="py-20 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className={steps.v ? "anim-fade-up" : "opacity-0"}>
+          <div className="text-center mb-14">
+            <div className="section-label justify-center mb-3">Процесс</div>
+            <h2 className="font-display font-light" style={{ fontSize:"clamp(1.8rem,3vw,2.5rem)", color:"hsl(40,18%,92%)" }}>
+              Порядок работы
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+            {/* Connector */}
+            <div className="hidden md:block absolute" style={{ top:22, left:"12.5%", right:"12.5%", height:1, background:`linear-gradient(90deg, transparent, ${G}, transparent)`, opacity:.3 }} />
+
             {STEPS.map((s,i) => (
-              <div key={s.n} className={`flex flex-col items-center text-center gap-3 relative z-10 ${steps.inView ? `animate-fade-up delay-${(i+1)*100}` : ""}`}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md"
-                  style={{ background: NAVY_BG }}>
-                  {s.n}
+              <div key={s.n} className={`flex flex-col items-center text-center gap-4 ${steps.v ? `anim-fade-up d-${i+1}` : "opacity-0"}`}>
+                <div className="step-num">{s.n}</div>
+                <div>
+                  <div className="font-body text-sm font-semibold mb-1" style={{ color:"hsl(40,18%,85%)" }}>{s.label}</div>
+                  <div className="font-body text-xs leading-relaxed" style={{ color:"hsl(40,8%,50%)" }}>{s.sub}</div>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed max-w-[180px]">{s.label}</p>
               </div>
             ))}
           </div>
-          {/* Gear icon center */}
-          <div className="flex justify-center mt-8">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
-              style={{ background: NAVY_BG }}>
-              <Icon name="Settings" size={28} style={{ color:"#7ec8e3" }} />
+
+          {/* Gear */}
+          <div className="flex justify-center mt-12">
+            <div className="w-16 h-16 rounded-full border flex items-center justify-center"
+              style={{ background:"hsl(43,72%,54%,.1)", borderColor:"hsl(43,72%,54%,.35)" }}>
+              <Icon name="Settings" size={26} style={{ color: G }} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══ ABOUT ══ */}
-      <section id="about" ref={about.ref} className="py-12 px-4 md:px-8 max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center">
-        <div className={about.inView ? "animate-fade-up" : "opacity-0"}>
-          <img src={IMG_WORKSHOP} alt="Мастерская" className="w-full rounded-xl object-cover shadow-xl"
-            style={{ height:340, filter:"brightness(0.9)" }} />
+      {/* ════ ABOUT ════ */}
+      <section id="about" ref={about.ref} className="py-16 px-4 md:px-8 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+        <div className={`relative ${about.v ? "anim-fade-up d-1" : "opacity-0"}`}>
+          <div className="rounded-sm overflow-hidden" style={{ height:380 }}>
+            <img src={IMG_WORKSHOP} alt="Мастерская" className="w-full h-full object-cover"
+              style={{ filter:"brightness(.8) saturate(.75)" }} />
+          </div>
+          {/* Gold corner accent */}
+          <div className="absolute -bottom-3 -right-3 w-20 h-20 rounded-sm border" style={{ borderColor:"hsl(43,72%,54%,.3)", background:"hsl(43,72%,54%,.06)" }} />
+          <div className="absolute -top-3 -left-3 w-12 h-12 rounded-sm border" style={{ borderColor:"hsl(43,72%,54%,.25)", background:"hsl(43,72%,54%,.05)" }} />
         </div>
-        <div className={about.inView ? "animate-fade-up delay-200" : "opacity-0"}>
-          <div className="rounded-xl p-6 md:p-8" style={{ background: NAVY_BG }}>
-            <div className="text-white/60 text-xs tracking-widest uppercase mb-2">О НАС</div>
-            <h3 className="text-white font-bold text-xl mb-1">Мастерская камня</h3>
-            <p className="text-white/70 text-sm mb-5 leading-relaxed">
-              Собственный цех по художественной обработке камня. Работаем с гранитом и мрамором.
-            </p>
-            <ul className="space-y-3">
-              {ABOUT_LIST.map((item,i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <Icon name="CheckCircle" size={16} style={{ color:"#7ec8e3", flexShrink:0, marginTop:2 }} />
-                  <span className="text-white/80 text-sm leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
+
+        <div className={about.v ? "anim-fade-up d-2" : "opacity-0"}>
+          <div className="section-label mb-4">О нас</div>
+          <h2 className="font-display font-light mb-2" style={{ fontSize:"clamp(1.6rem,3vw,2.3rem)", color:"hsl(40,18%,92%)" }}>
+            Мастерская камня
+          </h2>
+          <p className="font-body text-sm mb-2 leading-relaxed" style={{ color:"hsl(40,8%,55%)" }}>
+            Собственный цех по художественной обработке камня.
+          </p>
+          <p className="font-body text-sm mb-7 leading-relaxed" style={{ color:"hsl(40,8%,50%)" }}>
+            Работаем с гранитом и мрамором. На рынке Самары с 2003 года.
+          </p>
+
+          <div className="space-y-3 mb-8">
+            {ABOUT_LIST.map((item,i) => (
+              <div key={i} className="check-item">
+                <div className="check-dot" />
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <div className="gold-line mb-7" />
+          <div className="flex gap-3">
+            <button className="btn-gold"><Icon name="Phone" size={14} /> Связаться</button>
+            <button className="btn-outline-gold">Портфолио</button>
           </div>
         </div>
       </section>
 
-      {/* ══ CALCULATOR ══ */}
-      <section id="calculator" ref={calc.ref} className="py-12 px-4 md:px-8 max-w-4xl mx-auto">
-        <div className={calc.inView ? "animate-fade-up" : "opacity-0"}>
-          <h2 className="section-title text-center mb-2">КАЛЬКУЛЯТОР СТОИМОСТИ</h2>
-          <p className="text-center text-gray-500 text-sm mb-8">Выберите параметры — получите предварительную цену</p>
+      {/* ════ CALCULATOR ════ */}
+      <section id="calculator" ref={calcSec.ref} className="py-20 px-4 md:px-8"
+        style={{ background: S1, borderTop:`1px solid ${S3}`, borderBottom:`1px solid ${S3}` }}>
+        <div className={`max-w-4xl mx-auto ${calcSec.v ? "anim-fade-up" : "opacity-0"}`}>
+          <div className="text-center mb-12">
+            <div className="section-label justify-center mb-3">Калькулятор</div>
+            <h2 className="font-display font-light" style={{ fontSize:"clamp(1.8rem,3vw,2.5rem)", color:"hsl(40,18%,92%)" }}>
+              Рассчитайте стоимость
+            </h2>
+            <p className="font-body text-sm mt-2" style={{ color:"hsl(40,8%,52%)" }}>
+              Выберите параметры — получите предварительную цену
+            </p>
+          </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 md:p-8 border border-gray-100">
+          <div className="rounded-sm border p-7 md:p-10" style={{ background: S2, borderColor: S3 }}>
             {/* Material */}
-            <div className="mb-6">
-              <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: NAVY }}>1. Материал</div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="mb-8">
+              <div className="font-body text-xs tracking-widest uppercase mb-4" style={{ color: G }}>1. Материал</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                 {MATERIALS.map(m => (
-                  <button key={m.id} onClick={() => setCalcMat(m.id)}
-                    className="text-left p-3 rounded-lg border text-sm transition-all"
+                  <button key={m.id} onClick={() => setMat(m.id)}
+                    className="text-left p-3.5 rounded-sm border transition-all"
                     style={{
-                      borderColor: calcMat===m.id ? NAVY : "#e2e8f0",
-                      background:  calcMat===m.id ? "hsl(214,52%,28%,0.07)" : "#fff",
-                      color:       calcMat===m.id ? NAVY : "#4a5568",
-                      fontWeight:  calcMat===m.id ? 600 : 400,
+                      background:   mat===m.id ? "hsl(43,72%,54%,.1)" : S1,
+                      borderColor:  mat===m.id ? G : S3,
                     }}>
-                    <div className="text-xs font-semibold">{m.name}</div>
-                    <div className="text-xs opacity-60 mt-0.5">от {m.base.toLocaleString("ru")} ₽</div>
+                    <div className="font-body text-xs font-semibold" style={{ color: mat===m.id ? G : "hsl(40,18%,80%)" }}>{m.name}</div>
+                    <div className="font-body text-xs mt-0.5" style={{ color:"hsl(40,8%,45%)" }}>от {m.base.toLocaleString("ru")} ₽</div>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Size */}
-            <div className="mb-6">
-              <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: NAVY }}>2. Размер</div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="mb-8">
+              <div className="font-body text-xs tracking-widest uppercase mb-4" style={{ color: G }}>2. Размер</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                 {SIZES.map(s => (
-                  <button key={s.id} onClick={() => setCalcSize(s.id)}
-                    className="text-center p-3 rounded-lg border text-sm transition-all"
+                  <button key={s.id} onClick={() => setSz(s.id)}
+                    className="text-center p-3.5 rounded-sm border transition-all font-body text-sm"
                     style={{
-                      borderColor: calcSize===s.id ? NAVY : "#e2e8f0",
-                      background:  calcSize===s.id ? "hsl(214,52%,28%,0.07)" : "#fff",
-                      color:       calcSize===s.id ? NAVY : "#4a5568",
-                      fontWeight:  calcSize===s.id ? 600 : 400,
+                      background:  sz===s.id ? "hsl(43,72%,54%,.1)" : S1,
+                      borderColor: sz===s.id ? G : S3,
+                      color:       sz===s.id ? G : "hsl(40,18%,72%)",
+                      fontWeight:  sz===s.id ? 600 : 400,
                     }}>
                     {s.name}
                   </button>
@@ -440,54 +523,54 @@ export default function Index() {
             </div>
 
             {/* Engraving */}
-            <div className="mb-6">
-              <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: NAVY }}>3. Гравировка</div>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="mb-8">
+              <div className="font-body text-xs tracking-widest uppercase mb-4" style={{ color: G }}>3. Гравировка</div>
+              <div className="grid grid-cols-2 gap-2.5">
                 {ENGRAVINGS.map(e => (
-                  <button key={e.id} onClick={() => setCalcEngr(e.id)}
-                    className="text-left p-3 rounded-lg border text-sm flex justify-between items-center transition-all"
+                  <button key={e.id} onClick={() => setEngr(e.id)}
+                    className="flex items-center justify-between p-3.5 rounded-sm border transition-all text-left"
                     style={{
-                      borderColor: calcEngr===e.id ? NAVY : "#e2e8f0",
-                      background:  calcEngr===e.id ? "hsl(214,52%,28%,0.07)" : "#fff",
-                      color:       calcEngr===e.id ? NAVY : "#4a5568",
-                      fontWeight:  calcEngr===e.id ? 600 : 400,
+                      background:  engr===e.id ? "hsl(43,72%,54%,.1)" : S1,
+                      borderColor: engr===e.id ? G : S3,
                     }}>
-                    <span>{e.name}</span>
-                    <span className="text-xs opacity-60">{e.price > 0 ? `+${e.price.toLocaleString("ru")} ₽` : "—"}</span>
+                    <span className="font-body text-sm" style={{ color: engr===e.id ? G : "hsl(40,18%,72%)" }}>{e.name}</span>
+                    <span className="font-body text-xs" style={{ color:"hsl(40,8%,45%)" }}>
+                      {e.price > 0 ? `+${e.price.toLocaleString("ru")} ₽` : "—"}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Installation checkbox */}
-            <div className="mb-6">
-              <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: NAVY }}>4. Дополнительно</div>
+            {/* Extra */}
+            <div className="mb-8">
+              <div className="font-body text-xs tracking-widest uppercase mb-4" style={{ color: G }}>4. Дополнительно</div>
               <button onClick={() => setInstall(!install)}
-                className="flex items-center gap-3 p-3 rounded-lg border w-full text-left transition-all"
-                style={{
-                  borderColor: install ? NAVY : "#e2e8f0",
-                  background: install ? "hsl(214,52%,28%,0.07)" : "#fff",
-                }}>
-                <div className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all"
-                  style={{ borderColor: install ? NAVY : "#cbd5e0", background: install ? NAVY : "transparent" }}>
-                  {install && <Icon name="Check" size={12} style={{ color:"#fff" }} />}
+                className="flex items-center gap-3 p-3.5 rounded-sm border w-full text-left transition-all"
+                style={{ background: install ? "hsl(43,72%,54%,.1)" : S1, borderColor: install ? G : S3 }}>
+                <div className="w-5 h-5 rounded-sm border-2 flex items-center justify-center transition-all"
+                  style={{ borderColor: install ? G : "hsl(40,8%,40%)", background: install ? G : "transparent" }}>
+                  {install && <Icon name="Check" size={11} style={{ color: S0 }} />}
                 </div>
-                <span className="text-sm text-gray-700">Установка на месте</span>
-                <span className="ml-auto text-xs text-gray-400">+7 000 ₽</span>
+                <span className="font-body text-sm flex-1" style={{ color:"hsl(40,18%,78%)" }}>Установка на месте</span>
+                <span className="font-body text-xs" style={{ color:"hsl(40,8%,45%)" }}>+7 000 ₽</span>
               </button>
             </div>
 
             {/* Result */}
-            <div className="rounded-xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-              style={{ background: "linear-gradient(135deg, #1e3a5f, #2b5797)" }}>
-              <div>
-                <div className="text-white/70 text-xs uppercase tracking-wide mb-1">Итоговая стоимость</div>
-                <div className="text-white font-bold text-3xl">{total.toLocaleString("ru")} ₽</div>
-                <div className="text-white/50 text-xs mt-1">Рассрочка 0% · Уточните у менеджера</div>
+            <div className="rounded-sm p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 grain relative overflow-hidden"
+              style={{ background:"linear-gradient(135deg, hsl(20,8%,9%), hsl(20,8%,12%))", border:`1px solid hsl(43,72%,54%,.3)` }}>
+              <div className="absolute inset-0" style={{ background:"radial-gradient(ellipse at 0% 100%, hsl(43,72%,54%,.1), transparent 60%)" }} />
+              <div className="relative z-10">
+                <div className="font-body text-xs tracking-widest uppercase mb-1" style={{ color:"hsl(40,8%,50%)" }}>Предварительная стоимость</div>
+                <div className="font-display font-semibold" style={{ fontSize:"2.8rem", color: G, lineHeight:1 }}>
+                  {total.toLocaleString("ru")} ₽
+                </div>
+                <div className="font-body text-xs mt-2" style={{ color:"hsl(40,8%,45%)" }}>Рассрочка 0% · Уточните у менеджера</div>
               </div>
-              <div className="flex flex-col gap-2 w-full md:w-auto">
-                <button className="btn-white whitespace-nowrap">Получить расчёт</button>
-                <button className="btn-ghost-white text-xs py-2 whitespace-nowrap">
+              <div className="flex flex-col gap-2.5 relative z-10 w-full md:w-auto">
+                <button className="btn-gold whitespace-nowrap"><Icon name="MessageSquare" size={14} /> Получить расчёт</button>
+                <button className="btn-ghost whitespace-nowrap" style={{ padding:".6rem 1.5rem", fontSize:".72rem" }}>
                   <Icon name="Phone" size={13} /> Позвонить
                 </button>
               </div>
@@ -496,151 +579,167 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ══ REVIEWS ══ */}
-      <section id="reviews" ref={reviews.ref} className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className={reviews.inView ? "animate-fade-up" : "opacity-0"}>
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="section-title mb-0">ОТЗЫВЫ ПОКУПАТЕЛЕЙ</h2>
+      {/* ════ REVIEWS ════ */}
+      <section id="reviews" ref={reviews.ref} className="py-20 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className={reviews.v ? "anim-fade-up" : "opacity-0"}>
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <div className="section-label mb-3">Отзывы</div>
+              <h2 className="font-display font-light" style={{ fontSize:"clamp(1.8rem,3vw,2.5rem)", color:"hsl(40,18%,92%)" }}>
+                Нам доверяют
+              </h2>
+            </div>
             <div className="flex items-center gap-3">
-              <span className="text-gray-500 text-sm">Все отзывы 4.5</span>
-              <span className="flex items-center gap-1 bg-[#fc3f1d] text-white text-xs px-2 py-1 rounded font-bold">
-                <Icon name="Star" size={11} /> 4.2
+              <span className="font-body text-sm" style={{ color:"hsl(40,8%,50%)" }}>Рейтинг 4.5</span>
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold" style={{ background:"hsl(0,72%,50%,.9)", color:"#fff" }}>
+                <Icon name="Star" size={10} /> 4.2
               </span>
-              <span className="flex items-center gap-1 bg-[#4285f4] text-white text-xs px-2 py-1 rounded font-bold">
-                <Icon name="Star" size={11} /> 4.2
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold" style={{ background:"hsl(217,90%,60%,.9)", color:"#fff" }}>
+                <Icon name="Star" size={10} /> 4.2
               </span>
             </div>
           </div>
 
           <div className="relative">
-            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2">
               {REVIEWS.map((r,i) => (
-                <div key={i} className="review-card flex-shrink-0 w-72">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                      style={{ background: ["#e57373","#64b5f6","#81c784"][i % 3] }}>
-                      М
+                <div key={i} className={`review-card rounded-sm ${reviews.v ? `anim-fade-up d-${i+1}` : "opacity-0"}`}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-display font-semibold text-base flex-shrink-0"
+                      style={{ background:["hsl(0,60%,55%)","hsl(217,70%,55%)","hsl(145,55%,45%)"][i%3], color:"#fff" }}>
+                      {r.name[0]}
                     </div>
                     <div>
-                      <div className="font-semibold text-sm text-[#1e2d42]">{r.name}</div>
+                      <div className="font-body text-sm font-semibold" style={{ color:"hsl(40,18%,85%)" }}>{r.name}</div>
                       <div className="flex gap-0.5 mt-0.5">
-                        {Array.from({length:5}).map((_,j) => (
-                          <Icon key={j} name="Star" size={11} style={{ color:"#f59e0b" }} />
+                        {Array.from({length:r.rating}).map((_,j) => (
+                          <Icon key={j} name="Star" size={11} style={{ color:"hsl(43,80%,58%)" }} />
                         ))}
                       </div>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-3">{r.text}</p>
-                  <div className="flex items-center justify-between">
-                    <button className="text-xs underline" style={{ color: NAVY }}>Подробнее</button>
-                    <span className="text-gray-400 text-xs">Отзыв из {r.src}</span>
+                  <p className="font-body text-sm leading-relaxed mb-4" style={{ color:"hsl(40,8%,55%)" }}>
+                    «{r.text}»
+                  </p>
+                  <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: S3 }}>
+                    <button className="font-body text-xs underline" style={{ color: G }}>Подробнее</button>
+                    <span className="font-body text-xs" style={{ color:"hsl(40,8%,42%)" }}>Отзыв из {r.src}</span>
                   </div>
                 </div>
               ))}
             </div>
-            <button className="absolute -left-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">
-              <Icon name="ChevronLeft" size={14} style={{ color: NAVY }} />
-            </button>
-            <button className="absolute -right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">
-              <Icon name="ChevronRight" size={14} style={{ color: NAVY }} />
-            </button>
           </div>
         </div>
       </section>
 
-      {/* ══ PROMO CARDS ══ */}
-      <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[IMG_PORTFOLIO, IMG_ANGEL, IMG_CATALOG].map((img,i) => (
-          <div key={i} className="rounded-xl overflow-hidden relative flex flex-col justify-end p-5" style={{ minHeight:180 }}>
-            <img src={img} alt="Акция" className="absolute inset-0 w-full h-full object-cover" style={{ filter:"brightness(0.45)" }} />
+      {/* ════ PROMO 3-CARDS ════ */}
+      <section className="py-8 px-4 md:px-8 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+        {[IMG_PORTFOLIO, IMG_ANGEL, IMG_GRANITE].map((img,i) => (
+          <div key={i} className="relative rounded-sm overflow-hidden flex flex-col justify-end p-6 grain"
+            style={{ minHeight:180 }}>
+            <img src={img} alt="Акция" className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter:"brightness(.35) saturate(.5)" }} />
+            <div className="absolute inset-0" style={{ background:"linear-gradient(to top, hsl(20,8%,6%,.9) 0%, transparent 55%)" }} />
+            <div className="absolute inset-0 rounded-sm" style={{ boxShadow:`inset 0 0 0 1px hsl(43,72%,54%,.15)` }} />
             <div className="relative z-10">
-              <div className="inline-block bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full mb-2">Акция</div>
-              <div className="text-white font-semibold text-sm mb-1">При заказе от 1000 ваз — в подарок!</div>
-              {i===1 && <div className="text-white/70 text-xs mb-2">Скидка 18%</div>}
-              <button className="btn-ghost-white text-xs py-1.5 px-3">Подробнее</button>
+              <div className="inline-block px-2.5 py-0.5 rounded-full text-xs mb-2" style={{ background:"hsl(43,72%,54%,.18)", color: G, border:`1px solid hsl(43,72%,54%,.3)` }}>
+                Акция
+              </div>
+              <div className="font-display font-semibold text-base mb-1" style={{ color:"hsl(40,18%,90%)" }}>
+                {i===1 ? "Родительские субботы · Скидка 18%" : "При заказе от 1000 ваз — в подарок!"}
+              </div>
+              <button className="btn-ghost mt-3" style={{ padding:".4rem 1rem", fontSize:".7rem" }}>Подробнее</button>
             </div>
           </div>
         ))}
       </section>
 
-      {/* ══ FOOTER ══ */}
-      <footer ref={footer.ref} style={{ background: NAVY_BG }} className="mt-8">
+      {/* ════ FOOTER ════ */}
+      <footer ref={ftr.ref} className="mt-8 border-t" style={{ background: S1, borderColor: S3 }}>
         {/* Addresses */}
-        <div className="border-b border-white/10 py-8 px-4 md:px-8 max-w-7xl mx-auto">
-          <div className={`grid md:grid-cols-2 gap-8 ${footer.inView ? "animate-fade-up" : "opacity-0"}`}>
+        <div className="border-b" style={{ borderColor: S3 }}>
+          <div className={`max-w-7xl mx-auto px-4 md:px-8 py-10 grid md:grid-cols-2 gap-8 ${ftr.v ? "anim-fade-up" : "opacity-0"}`}>
             <div>
-              <h3 className="text-white font-bold mb-4 text-base">Адреса магазинов</h3>
-              <div className="space-y-2">
+              <h3 className="font-display text-lg font-semibold mb-5" style={{ color:"hsl(40,18%,88%)" }}>Адреса магазинов</h3>
+              <div className="space-y-3">
                 {ADDRESSES.map((a,i) => (
-                  <div key={i} className="flex items-start gap-2 text-white/70 text-sm">
-                    <Icon name="MapPin" size={14} style={{ color:"#7ec8e3", flexShrink:0, marginTop:2 }} />
-                    {a}
+                  <div key={i} className="flex items-start gap-3 font-body text-sm" style={{ color:"hsl(40,8%,55%)" }}>
+                    <Icon name="MapPin" size={14} style={{ color: G, flexShrink:0, marginTop:2 }} />{a}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-lg overflow-hidden h-36 bg-white/10 flex items-center justify-center">
-              <div className="text-white/40 text-sm flex items-center gap-2">
-                <Icon name="Map" size={18} /> Карта загружается
+            {/* Map placeholder */}
+            <div className="rounded-sm flex items-center justify-center border" style={{ minHeight:130, background: S2, borderColor: S3 }}>
+              <div className="flex flex-col items-center gap-2" style={{ color:"hsl(40,8%,38%)" }}>
+                <Icon name="Map" size={22} style={{ color: G, opacity:.4 }} />
+                <span className="font-body text-xs">Карта</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom footer */}
-        <div className="py-8 px-4 md:px-8 max-w-7xl mx-auto">
-          <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 ${footer.inView ? "animate-fade-up delay-200" : "opacity-0"}`}>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">Контакты</h4>
-              <div className="space-y-2">
-                {[
-                  { icon:"MapPin",  text:"г. Самара, ул. Мечникова, 15" },
-                  { icon:"Phone",   text:"+7 (846) 300-12-34" },
-                  { icon:"Clock",   text:"Пн–Сб: 9:00–18:00" },
-                ].map(c => (
-                  <div key={c.text} className="flex items-start gap-2 text-white/60 text-xs">
-                    <Icon name={c.icon} size={12} style={{ color:"#7ec8e3", flexShrink:0, marginTop:1 }} />
-                    {c.text}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">Наша компания</h4>
-              {["О нас","Портфолио","Доставка","Оплата","Личный кабинет"].map(l => (
-                <div key={l} className="text-white/50 text-xs mb-1.5 hover:text-white/80 cursor-pointer transition-colors">{l}</div>
+        {/* Footer columns */}
+        <div className={`max-w-7xl mx-auto px-4 md:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-10 ${ftr.v ? "anim-fade-up d-2" : "opacity-0"}`}>
+          <div>
+            <h4 className="font-body text-xs tracking-widest uppercase mb-5" style={{ color: G }}>Контакты</h4>
+            <div className="space-y-2.5">
+              {[
+                {i:"MapPin", t:"г. Самара, ул. Мечникова, 15"},
+                {i:"Phone",  t:"+7 (846) 300-12-34"},
+                {i:"Clock",  t:"Пн–Сб: 9:00–18:00"},
+                {i:"Mail",   t:"info@khraniteli-samara.ru"},
+              ].map(c => (
+                <div key={c.t} className="flex items-start gap-2 font-body text-xs" style={{ color:"hsl(40,8%,50%)" }}>
+                  <Icon name={c.i as "MapPin"} size={12} style={{ color: G, flexShrink:0, marginTop:1 }} />{c.t}
+                </div>
               ))}
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">Профиль</h4>
-              {["Личный данные","Избранное"].map(l => (
-                <div key={l} className="text-white/50 text-xs mb-1.5 hover:text-white/80 cursor-pointer transition-colors">{l}</div>
-              ))}
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">Рассылка</h4>
-              <p className="text-white/50 text-xs mb-3">Подпишитесь на новости и акции</p>
-              <div className="flex gap-2">
-                <input placeholder="Email" className="flex-1 rounded px-2 py-1.5 text-xs bg-white/10 border border-white/20 text-white placeholder:text-white/30 outline-none focus:border-white/50" />
-                <button className="btn-white text-xs py-1.5 px-3">OK</button>
-              </div>
-              <div className="flex gap-2 mt-4">
-                {["Youtube","Send","Instagram"].map(s => (
-                  <a key={s} href="#" className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors">
-                    <Icon name={s as "Send"} size={13} style={{ color:"#7ec8e3" }} />
-                  </a>
-                ))}
-              </div>
             </div>
           </div>
-
-          <div className="border-t border-white/10 mt-8 pt-4 flex flex-col md:flex-row items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Icon name="Gem" size={16} style={{ color:"#7ec8e3" }} />
-              <span className="text-white font-bold text-sm tracking-wide">ХРАНИТЕЛЬ</span>
-              <span className="text-white/40 text-xs">МАСТЕРСКАЯ КАМНЯ</span>
+          <div>
+            <h4 className="font-body text-xs tracking-widest uppercase mb-5" style={{ color: G }}>Компания</h4>
+            {["О нас","Портфолио","Доставка","Оплата","Гарантия"].map(l => (
+              <div key={l} className="font-body text-xs mb-2 cursor-pointer transition-colors hover:text-gold" style={{ color:"hsl(40,8%,50%)" }}>{l}</div>
+            ))}
+          </div>
+          <div>
+            <h4 className="font-body text-xs tracking-widest uppercase mb-5" style={{ color: G }}>Каталог</h4>
+            {TABS.map(l => (
+              <div key={l} className="font-body text-xs mb-2 cursor-pointer transition-colors hover:text-gold" style={{ color:"hsl(40,8%,50%)" }}>{l}</div>
+            ))}
+          </div>
+          <div>
+            <h4 className="font-body text-xs tracking-widest uppercase mb-5" style={{ color: G }}>Рассылка</h4>
+            <p className="font-body text-xs mb-4" style={{ color:"hsl(40,8%,46%)" }}>Подпишитесь на новости и акции</p>
+            <div className="flex gap-2 mb-5">
+              <input placeholder="E-mail" className="flex-1 rounded-sm px-3 py-2 text-xs outline-none border"
+                style={{ background: S0, borderColor: S3, color:"hsl(40,18%,80%)" }} />
+              <button className="btn-gold" style={{ padding:".5rem .9rem", fontSize:".7rem" }}>OK</button>
             </div>
-            <div className="text-white/40 text-xs">© 2024 Мастерская камня «Хранители». Все права защищены.</div>
+            <div className="flex gap-2">
+              {["Youtube","Send","Users"].map(s => (
+                <a key={s} href="#" className="w-8 h-8 rounded-full border flex items-center justify-center transition-all hover:border-gold"
+                  style={{ borderColor: S3, background: S0 }}>
+                  <Icon name={s as "Send"} size={13} style={{ color: G }} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="border-t" style={{ borderColor: S3 }}>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-full border flex items-center justify-center" style={{ borderColor:"hsl(43,72%,54%,.4)", background:"hsl(43,72%,54%,.1)" }}>
+                <Icon name="Gem" size={13} style={{ color: G }} />
+              </div>
+              <span className="font-display font-semibold tracking-[.15em] text-sm" style={{ color:"hsl(40,18%,85%)" }}>ХРАНИТЕЛЬ</span>
+              <span className="font-body text-xs" style={{ color:"hsl(40,8%,38%)" }}>МАСТЕРСКАЯ КАМНЯ</span>
+            </div>
+            <div className="font-body text-xs" style={{ color:"hsl(40,8%,35%)" }}>
+              © 2024 Мастерская камня «Хранители» · Самара · ИНН 6312000000
+            </div>
           </div>
         </div>
       </footer>
