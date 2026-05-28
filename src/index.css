@@ -2,51 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Variables ─── */
+/* ─────────────────────────────────────────
+   DESIGN TOKENS
+   Palette: deep navy + royal blue + gold
+───────────────────────────────────────── */
 @layer base {
   :root {
-    /* shadcn tokens — mapped to dark luxury palette */
-    --background: 20 8% 6%;
-    --foreground: 40 18% 90%;
-    --card: 20 8% 9%;
-    --card-foreground: 40 18% 90%;
-    --popover: 20 8% 9%;
-    --popover-foreground: 40 18% 90%;
+    /* shadcn */
+    --background: 218 45% 8%;
+    --foreground: 210 30% 92%;
+    --card: 218 40% 11%;
+    --card-foreground: 210 30% 92%;
+    --popover: 218 40% 11%;
+    --popover-foreground: 210 30% 92%;
     --primary: 43 72% 54%;
-    --primary-foreground: 20 8% 6%;
-    --secondary: 20 8% 13%;
-    --secondary-foreground: 40 18% 80%;
-    --muted: 20 8% 12%;
-    --muted-foreground: 40 8% 52%;
+    --primary-foreground: 218 45% 8%;
+    --secondary: 218 35% 15%;
+    --secondary-foreground: 210 25% 78%;
+    --muted: 218 35% 13%;
+    --muted-foreground: 210 15% 52%;
     --accent: 43 72% 54%;
-    --accent-foreground: 20 8% 6%;
+    --accent-foreground: 218 45% 8%;
     --destructive: 0 62% 50%;
-    --destructive-foreground: 40 18% 90%;
-    --border: 20 8% 17%;
-    --input: 20 8% 13%;
+    --destructive-foreground: 210 30% 92%;
+    --border: 218 30% 18%;
+    --input: 218 35% 13%;
     --ring: 43 72% 54%;
     --radius: 0.25rem;
-
-    /* sidebar */
-    --sidebar-background: 20 8% 6%;
-    --sidebar-foreground: 40 18% 90%;
+    --sidebar-background: 218 45% 8%;
+    --sidebar-foreground: 210 30% 92%;
     --sidebar-primary: 43 72% 54%;
-    --sidebar-primary-foreground: 20 8% 6%;
-    --sidebar-accent: 20 8% 13%;
-    --sidebar-accent-foreground: 40 18% 80%;
-    --sidebar-border: 20 8% 17%;
+    --sidebar-primary-foreground: 218 45% 8%;
+    --sidebar-accent: 218 35% 15%;
+    --sidebar-accent-foreground: 210 25% 78%;
+    --sidebar-border: 218 30% 18%;
     --sidebar-ring: 43 72% 54%;
 
-    /* brand tokens */
-    --gold: 43 72% 54%;
+    /* Brand tokens */
+    --navy-deep: 218 50% 6%; /* darkest bg */
+    --navy-0: 218 48% 8%; /* page bg */
+    --navy-1: 218 44% 11%; /* cards */
+    --navy-2: 218 40% 14%; /* elevated */
+    --navy-3: 218 34% 20%; /* borders, dividers */
+    --navy-4: 218 28% 30%; /* subtle elements */
+    --blue-mid: 214 60% 38%; /* mid accent */
+    --blue-light: 210 70% 55%; /* link / icon accent */
+    --gold: 43 72% 54%; /* gold accent */
     --gold-light: 43 80% 70%;
     --gold-dim: 43 55% 36%;
-    --stone-0: 20 8% 5%;
-    --stone-1: 20 8% 8%;
-    --stone-2: 20 8% 11%;
-    --stone-3: 20 8% 16%;
-    --cream: 40 18% 90%;
-    --cream-dim: 40 10% 62%;
+    --cream: 210 28% 92%;
+    --cream-dim: 210 15% 62%;
   }
 }
 
@@ -58,14 +63,14 @@
     scroll-behavior: smooth;
   }
   body {
-    background: hsl(var(--stone-0));
+    background: hsl(var(--navy-0));
     color: hsl(var(--cream));
     font-family: "Golos Text", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 }
 
-/* ─── Typography helpers ─── */
+/* ─── Typography ─── */
 .font-display {
   font-family: "Cormorant", serif;
 }
@@ -73,83 +78,16 @@
   font-family: "Golos Text", sans-serif;
 }
 
-/* ─── Gold utilities ─── */
-.text-gold {
-  color: hsl(var(--gold));
-}
-.text-gold-light {
-  color: hsl(var(--gold-light));
-}
-.text-cream {
-  color: hsl(var(--cream));
-}
-.text-cream-dim {
-  color: hsl(var(--cream-dim));
-}
-.bg-stone-0 {
-  background: hsl(var(--stone-0));
-}
-.bg-stone-1 {
-  background: hsl(var(--stone-1));
-}
-.bg-stone-2 {
-  background: hsl(var(--stone-2));
-}
-.border-gold {
-  border-color: hsl(var(--gold));
-}
-
-.gold-gradient {
-  background: linear-gradient(
-    135deg,
-    hsl(43 55% 38%) 0%,
-    hsl(43 80% 66%) 50%,
-    hsl(43 55% 38%) 100%
-  );
-}
-
-.gold-text {
-  background: linear-gradient(
-    135deg,
-    hsl(43 80% 72%) 0%,
-    hsl(43 72% 54%) 45%,
-    hsl(43 80% 72%) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ─── Thin gold line ─── */
-.gold-line {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsl(var(--gold)),
-    transparent
-  );
-}
-.gold-line-v {
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    hsl(var(--gold) / 0.5),
-    transparent
-  );
-}
-
-/* ─── Noise grain overlay ─── */
+/* ─── Grain texture ─── */
 .grain::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px;
   z-index: 1;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
 }
 
 /* ─── Section label ─── */
@@ -159,17 +97,28 @@
   gap: 10px;
   font-family: "Golos Text", sans-serif;
   font-size: 0.68rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: hsl(var(--gold));
 }
 .section-label::before,
 .section-label::after {
   content: "";
-  display: block;
-  width: 28px;
+  width: 24px;
   height: 1px;
-  background: hsl(var(--gold) / 0.6);
+  background: hsl(var(--gold) / 0.5);
+  display: block;
+}
+
+/* ─── Gold line ─── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--gold) / 0.5),
+    transparent
+  );
 }
 
 /* ─── Buttons ─── */
@@ -177,15 +126,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   background: linear-gradient(
     135deg,
     hsl(43 55% 38%) 0%,
-    hsl(43 72% 54%) 50%,
+    hsl(43 72% 58%) 50%,
     hsl(43 55% 38%) 100%
   );
   background-size: 200% auto;
-  color: hsl(var(--stone-0));
+  color: hsl(218 50% 7%);
   font-family: "Golos Text", sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
@@ -195,9 +144,9 @@
   border: none;
   cursor: pointer;
   transition:
-    background-position 0.4s ease,
-    box-shadow 0.3s ease,
-    transform 0.2s ease;
+    background-position 0.4s,
+    box-shadow 0.3s,
+    transform 0.2s;
 }
 .btn-gold:hover {
   background-position: right center;
@@ -205,34 +154,60 @@
   transform: translateY(-1px);
 }
 
+.btn-navy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: hsl(var(--blue-mid));
+  color: #fff;
+  font-family: "Golos Text", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.72rem 1.8rem;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    box-shadow 0.25s,
+    transform 0.2s;
+}
+.btn-navy:hover {
+  background: hsl(214 65% 44%);
+  box-shadow: 0 6px 24px hsl(214 60% 38% / 0.4);
+  transform: translateY(-1px);
+}
+
 .btn-outline-gold {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   background: transparent;
   color: hsl(var(--gold));
-  border: 1px solid hsl(var(--gold) / 0.5);
+  border: 1px solid hsl(var(--gold) / 0.45);
   font-family: "Golos Text", sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.7rem 1.8rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
 }
 .btn-outline-gold:hover {
-  background: hsl(var(--gold) / 0.1);
+  background: hsl(var(--gold) / 0.08);
   border-color: hsl(var(--gold));
-  box-shadow: 0 0 20px hsl(43 72% 54% / 0.18);
+  box-shadow: 0 0 18px hsl(43 72% 54% / 0.2);
 }
 
-.btn-ghost {
+.btn-outline-white {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   background: transparent;
   color: hsl(var(--cream));
   border: 1px solid hsl(var(--cream) / 0.3);
@@ -243,74 +218,42 @@
   text-transform: uppercase;
   padding: 0.7rem 1.8rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
 }
-.btn-ghost:hover {
-  background: hsl(var(--cream) / 0.08);
-  border-color: hsl(var(--cream) / 0.6);
-}
-
-/* ─── Cards ─── */
-.product-card {
-  background: hsl(var(--stone-2));
-  border: 1px solid hsl(var(--stone-3));
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.product-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, hsl(43 72% 54% / 0.05), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.35s;
-  pointer-events: none;
-  z-index: 1;
-}
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow:
-    0 16px 48px hsl(0 0% 0% / 0.5),
-    0 0 0 1px hsl(43 72% 54% / 0.25);
-  border-color: hsl(43 72% 54% / 0.35);
-}
-.product-card:hover::before {
-  opacity: 1;
+.btn-outline-white:hover {
+  background: hsl(var(--cream) / 0.07);
+  border-color: hsl(var(--cream) / 0.55);
 }
 
 /* ─── Nav ─── */
 .nav-item {
   font-family: "Golos Text", sans-serif;
   font-size: 0.77rem;
-  letter-spacing: 0.06em;
-  color: hsl(var(--cream) / 0.75);
+  letter-spacing: 0.04em;
+  color: hsl(var(--cream) / 0.7);
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.3rem 0.5rem;
+  padding: 0.28rem 0.5rem;
   display: flex;
   align-items: center;
   gap: 3px;
   white-space: nowrap;
   transition: color 0.2s;
+  border-radius: 3px;
 }
 .nav-item:hover {
   color: hsl(var(--gold));
+  background: hsl(var(--gold) / 0.06);
 }
 
-/* ─── Tab buttons ─── */
+/* ─── Tab pills ─── */
 .tab-pill {
   font-family: "Golos Text", sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  padding: 0.38rem 1rem;
+  font-size: 0.76rem;
+  padding: 0.38rem 1.1rem;
   border-radius: 999px;
-  border: 1px solid hsl(var(--stone-3));
+  border: 1px solid hsl(var(--navy-3));
   background: transparent;
   color: hsl(var(--cream-dim));
   cursor: pointer;
@@ -319,77 +262,85 @@
 }
 .tab-pill.active,
 .tab-pill:hover {
-  border-color: hsl(var(--gold) / 0.6);
+  border-color: hsl(var(--gold) / 0.55);
   color: hsl(var(--gold));
   background: hsl(var(--gold) / 0.07);
 }
 
+/* ─── Cards ─── */
+.product-card {
+  background: hsl(var(--navy-1));
+  border: 1px solid hsl(var(--navy-3));
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+.product-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(var(--gold) / 0.05), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+  z-index: 1;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 52px hsl(218 60% 4% / 0.7),
+    0 0 0 1px hsl(var(--gold) / 0.22);
+  border-color: hsl(var(--gold) / 0.3);
+}
+.product-card:hover::after {
+  opacity: 1;
+}
+
+/* ─── Badge ─── */
+.badge-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: hsl(var(--gold) / 0.1);
+  border: 1px solid hsl(var(--gold) / 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ─── Review card ─── */
 .review-card {
-  background: hsl(var(--stone-2));
-  border: 1px solid hsl(var(--stone-3));
-  padding: 1.5rem;
-  min-width: 290px;
-  max-width: 330px;
+  background: hsl(var(--navy-1));
+  border: 1px solid hsl(var(--navy-3));
+  padding: 1.6rem;
+  min-width: 295px;
+  max-width: 340px;
   flex-shrink: 0;
   transition:
     border-color 0.3s,
     box-shadow 0.3s;
 }
 .review-card:hover {
-  border-color: hsl(var(--gold) / 0.25);
-  box-shadow: 0 8px 32px hsl(0 0% 0% / 0.35);
+  border-color: hsl(var(--gold) / 0.3);
+  box-shadow: 0 10px 36px hsl(218 60% 4% / 0.5);
 }
 
-/* ─── Badge strip ─── */
-.badge-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-}
-.badge-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: hsl(var(--gold) / 0.12);
-  border: 1px solid hsl(var(--gold) / 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ─── About checklist ─── */
-.check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-family: "Golos Text", sans-serif;
-  font-size: 0.88rem;
-  color: hsl(var(--cream-dim));
-  line-height: 1.6;
-}
-.check-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: hsl(var(--gold));
-  margin-top: 0.52rem;
-  flex-shrink: 0;
-}
-
-/* ─── Step ─── */
+/* ─── Step num ─── */
 .step-num {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  border: 1.5px solid hsl(var(--gold) / 0.5);
+  border: 1.5px solid hsl(var(--gold) / 0.45);
+  background: hsl(var(--gold) / 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Cormorant", serif;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: hsl(var(--gold));
   flex-shrink: 0;
@@ -408,7 +359,7 @@
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(26px);
   }
   to {
     opacity: 1;
@@ -424,31 +375,27 @@
   }
 }
 
-.anim-fade-up {
-  animation: fade-up 0.7s cubic-bezier(0.22, 0.68, 0, 1.2) both;
+.anim-up {
+  animation: fade-up 0.65s cubic-bezier(0.22, 0.68, 0, 1.15) both;
 }
-.anim-fade-in {
+.anim-in {
   animation: fade-in 0.6s ease both;
 }
-
-.d-0 {
-  animation-delay: 0s;
-}
-.d-1 {
+.d1 {
   animation-delay: 0.1s;
 }
-.d-2 {
+.d2 {
   animation-delay: 0.2s;
 }
-.d-3 {
+.d3 {
   animation-delay: 0.3s;
 }
-.d-4 {
+.d4 {
   animation-delay: 0.4s;
 }
-.d-5 {
+.d5 {
   animation-delay: 0.5s;
 }
-.d-6 {
+.d6 {
   animation-delay: 0.6s;
 }
